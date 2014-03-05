@@ -28,14 +28,14 @@ CONF_DIR=.sickconf;
 if [ -n "$1" ]; then
 
   # Do they want help?
-  if [ $1 = "--help" ]; then  
+  if [ "$1" = "--help" ]; then  
     echo "usage: $0 [MATLAB_MEX_DIR [MATLAB_TOOLBOX_DIR]]"
     echo "example: $0 /usr/local/matlab/bin /usr/local/matlab/toolbox"
     exit;
   fi
 
   # Do they want a clean config?
-  if [ $1 = "clean" ]; then
+  if [ "$1" = "clean" ]; then
     CLEAN_CONF="yes";
   fi
 
@@ -95,7 +95,7 @@ else
 fi
 
 # Check whether mex exists
-if [ ! -e $BIN_DIR/mex ]; then
+if [ ! -e "$BIN_DIR/mex" ]; then
   echo "$0: Invalid mex directory!"
   exit;
 fi
@@ -127,7 +127,7 @@ else
 fi
 
 # Check whether directory exists
-if [ ! -e $BOX_DIR ]; then
+if [ ! -e "$BOX_DIR" ]; then
   echo "$0: Invalid toolbox directory!"
   exit;
 fi

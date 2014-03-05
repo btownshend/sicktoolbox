@@ -103,7 +103,7 @@ if [ ! $? -eq 0 ]; then
 
 fi
 
-if [ -z $BIN_DIR ]; then
+if [ -z "$BIN_DIR" ]; then
 
   echo "$0: Empty config file! Please (re)run config_mex."
 
@@ -133,7 +133,7 @@ if [ $BUILD_TYPE = "all" -o $BUILD_TYPE = "ld" ]; then
   # Build the mex and place in temp dir
   echo "Building Sick LD mex..."
 
-  $BIN_DIR/mex -g -output ./$BUILD_DIR/sickld \
+  "$BIN_DIR/mex" -g -output ./$BUILD_DIR/sickld \
                           interfaces/ld/ldmex.cc \
                           ../c++/drivers/ld/$SICK_LD_SRC_DIR/SickLDMessage.cc \
                           ../c++/drivers/ld/$SICK_LD_SRC_DIR/SickLDBufferMonitor.cc \
