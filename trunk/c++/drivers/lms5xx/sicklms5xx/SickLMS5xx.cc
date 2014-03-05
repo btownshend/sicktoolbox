@@ -469,7 +469,8 @@ namespace SickToolbox {
 
 
     /* Process RSSI sections */
-    if(reflect_1_vals != NULL)
+    try {
+   if(reflect_1_vals != NULL)
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "RSSI1", reflect_1_vals);
     if(reflect_2_vals != NULL)
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "RSSI2", reflect_2_vals);
@@ -479,9 +480,14 @@ namespace SickToolbox {
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "RSSI4", reflect_4_vals);
     if(reflect_5_vals != NULL)
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "RSSI5", reflect_5_vals);
-//      std::cerr << "SickLMS5xx::GetSickMeasurements: WARNING! It seems you are expecting single-pulse reflectivity values, which are not being streamed! ";
-//      std::cerr << "Use SetSickScanDataFormat to configure the LMS 5xx to stream these values - or - set the corresponding buffer input to NULL to avoid this warning." << std::endl;
-
+    } catch (SickIOException) {
+	static int firsttime=1;
+	if (firsttime) {
+	    std::cerr << "SickLMS5xx::GetSickMeasurements: WARNING! It seems you are expecting single-pulse reflectivity values, which are not being streamed! ";
+	    std::cerr << "Use SetSickScanDataFormat to configure the LMS 5xx to stream these values - or - set the corresponding buffer input to NULL to avoid this warning." << std::endl;
+	    firsttime=0;
+	}
+    }
     /* Success! */
     
   }
@@ -489,8 +495,10 @@ namespace SickToolbox {
   int SickLMS5xx::_readDistancesOrRSSI(char * payload_buffer, int payload_sz, const char * label, unsigned int * const range_vals)
   {
     unsigned int substr_dist_pos = 0;
-    if (!_findSubString((char *)payload_buffer,label,payload_sz,strlen(label),substr_dist_pos))
+    if (!_findSubString((char *)payload_buffer,label,payload_sz,strlen(label),substr_dist_pos)) {
+	//fprintf(stderr,"payload_buffer=%s, label=%s, payload_sz=%d\n", payload_buffer, label, payload_sz);
       throw SickIOException("SickLMS5xx::_readDistances: _findSubString() failed!");
+    }
 
     char * payload_str = (char *)&payload_buffer[substr_dist_pos+strlen(label)+1];
 
@@ -709,8 +717,9 @@ namespace SickToolbox {
     
       /* Try to connect to the Sick LD */
       int conn_return;
+        int num_active_files = 0;
       if ((conn_return = connect(_sick_fd,(struct sockaddr *)&_sick_inet_address_info,sizeof(struct sockaddr_in))) < 0) {
-
+	  perror("connect");
         /* Check whether it is b/c it would block */
         if (errno != EINPROGRESS) {
           throw SickIOException("SickLMS5xx::_setupConnection: connect() failed!");
@@ -718,7 +727,6 @@ namespace SickToolbox {
 
         /* Use select to wait on the socket */
         int valid_opt = 0;
-        int num_active_files = 0;
         struct timeval timeout_val;                                  // This structure will be used for setting our timeout values
         fd_set file_desc_set;                                        // File descriptor set for monitoring I/O
     
@@ -731,7 +739,8 @@ namespace SickToolbox {
         timeout_val.tv_usec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT;  // Wait for specified time before throwing a timeout
       
         /* Wait for the OS to tell us that the connection is established! */
-        num_active_files = select(getdtablesize(),0,&file_desc_set,0,&timeout_val);
+	printf("select(%d,0,set(%d),0,(%ld,%d)\n",_sick_fd+1,_sick_fd,timeout_val.tv_sec,timeout_val.tv_usec);
+        num_active_files = select(_sick_fd+1,0,&file_desc_set,0,&timeout_val);
       
         /* Figure out what to do based on the output of select */
         if (num_active_files > 0) {
@@ -762,7 +771,8 @@ namespace SickToolbox {
         else {
 
           /* An error has occurred! */
-          throw SickIOException("SickLMS5xx::_setupConnection: select() failed!");
+	    perror("connect");
+	    throw SickIOException("SickLMS5xx::_setupConnection: select() failed!");
 
         }
 
