@@ -736,8 +736,9 @@ namespace SickToolbox {
 
         /* Setup the timeout structure */
         memset(&timeout_val,0,sizeof(timeout_val));                  // Initialize the buffer
-        timeout_val.tv_usec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT;  // Wait for specified time before throwing a timeout
-      
+        timeout_val.tv_usec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT%1000000;  // Wait for specified time before throwing a timeout
+        timeout_val.tv_sec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT/1000000;  // Wait for specified time before throwing a timeout
+
         /* Wait for the OS to tell us that the connection is established! */
 	printf("select(%d,0,set(%d),0,(%ld,%d)\n",_sick_fd+1,_sick_fd,timeout_val.tv_sec,timeout_val.tv_usec);
         num_active_files = select(_sick_fd+1,0,&file_desc_set,0,&timeout_val);
