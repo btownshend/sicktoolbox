@@ -1,4 +1,4 @@
-
+BUILD
 Makefile.in
 
 trunk/aclocal.m4
@@ -30,3 +30,15 @@ trunk/misc/missing
 trunk/c++/drivers/base/src/SickConfig.hh.in
 
 trunk/configure
+Makefile
+.deps
+
+trunk/c++/drivers/base/src/SickConfig.hh
+
+trunk/c++/drivers/base/src/stamp-h1
+
+trunk/config.log
+
+trunk/config.status
+
+trunk/libtool
