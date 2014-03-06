@@ -452,6 +452,7 @@ namespace SickToolbox {
     }
 
     /* Process DIST sections */
+    try {
     if(range_1_vals != NULL)
       num_measurements = _readDistancesOrRSSI(
                            (char *)payload_buffer, recv_message.GetPayloadLength()+1, "DIST1", range_1_vals);
@@ -463,9 +464,14 @@ namespace SickToolbox {
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "DIST4", range_4_vals);
     if(range_5_vals != NULL)
       _readDistancesOrRSSI((char *)payload_buffer, recv_message.GetPayloadLength()+1, "DIST5", range_5_vals);
-
-//    std::cerr << "SickLMS5xx::GetSickMeasurements: WARNING! It seems you are expecting double-pulse range values, which are not being streamed! ";
-//    std::cerr << "Use SetSickScanDataFormat to configure the LMS 5xx to stream these values - or - set the corresponding buffer input to NULL to avoid this warning." << std::endl;
+  } catch (SickIOException) {
+	static int firsttime=1;
+	if (firsttime) {
+	    std::cerr << "SickLMS5xx::GetSickMeasurements: WARNING! It seems you are expecting double-pulse range values, which are not being streamed! ";
+	    std::cerr << "Use SetSickScanDataFormat to configure the LMS 5xx to stream these values - or - set the corresponding buffer input to NULL to avoid this warning." << std::endl;
+	    firsttime=0;
+	}
+    }
 
 
     /* Process RSSI sections */
@@ -496,7 +502,7 @@ namespace SickToolbox {
   {
     unsigned int substr_dist_pos = 0;
     if (!_findSubString((char *)payload_buffer,label,payload_sz,strlen(label),substr_dist_pos)) {
-	//fprintf(stderr,"payload_buffer=%s, label=%s, payload_sz=%d\n", payload_buffer, label, payload_sz);
+	//	fprintf(stderr,"payload_buffer=%s, label=%s, payload_sz=%d\n", payload_buffer, label, payload_sz);
       throw SickIOException("SickLMS5xx::_readDistances: _findSubString() failed!");
     }
 
@@ -719,7 +725,7 @@ namespace SickToolbox {
       int conn_return;
         int num_active_files = 0;
       if ((conn_return = connect(_sick_fd,(struct sockaddr *)&_sick_inet_address_info,sizeof(struct sockaddr_in))) < 0) {
-	  perror("connect");
+	  //	  perror("connect");
         /* Check whether it is b/c it would block */
         if (errno != EINPROGRESS) {
           throw SickIOException("SickLMS5xx::_setupConnection: connect() failed!");
@@ -740,7 +746,7 @@ namespace SickToolbox {
         timeout_val.tv_sec = DEFAULT_SICK_LMS_5XX_CONNECT_TIMEOUT/1000000;  // Wait for specified time before throwing a timeout
 
         /* Wait for the OS to tell us that the connection is established! */
-	printf("select(%d,0,set(%d),0,(%ld,%d)\n",_sick_fd+1,_sick_fd,timeout_val.tv_sec,timeout_val.tv_usec);
+	//	printf("select(%d,0,set(%d),0,(%ld,%d)\n",_sick_fd+1,_sick_fd,timeout_val.tv_sec,timeout_val.tv_usec);
         num_active_files = select(_sick_fd+1,0,&file_desc_set,0,&timeout_val);
       
         /* Figure out what to do based on the output of select */
