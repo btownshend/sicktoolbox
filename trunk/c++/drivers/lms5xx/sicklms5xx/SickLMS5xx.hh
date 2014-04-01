@@ -266,6 +266,8 @@ namespace SickToolbox {
     void _sendMessage( const SickLMS5xxMessage &send_message ) const throw ( SickIOException );
     
     /** Send the message and grab expected reply */
+      // Avoid warning about hiding overloaded virtual function
+      using SickLIDAR< SickLMS5xxBufferMonitor, SickLMS5xxMessage >::_sendMessageAndGetReply;
     void _sendMessageAndGetReply( const SickLMS5xxMessage &send_message,
                                   SickLMS5xxMessage &recv_message,
                                   const std::string reply_command_code,
