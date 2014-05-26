@@ -260,10 +260,13 @@ void setConfig() {
   config_path = getFilename();
 
   /* Instantiate the parser */
-  if(ifstream(config_path.c_str()) != NULL) {
+  ifstream filetest(config_path.c_str());
+  if (filetest.good()) {
+      filetest.close();
     sick_config_file = ConfigFile(config_path);
   }
   else {
+      filetest.close();
     cerr << "Invalid filename!" << endl;
     return;
   }
