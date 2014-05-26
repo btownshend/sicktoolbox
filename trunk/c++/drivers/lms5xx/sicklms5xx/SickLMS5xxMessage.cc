@@ -101,7 +101,7 @@ namespace SickToolbox {
     for (int i = 0; i < 3; i++) {
       command_type[i] = _message_buffer[i+1];
     }
-    command_type[4] = '\0';
+    command_type[3] = '\0';
     _command_type = command_type;
     
     /* Grab the command (max length is 14 bytes) */
