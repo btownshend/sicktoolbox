@@ -130,6 +130,31 @@ namespace SickToolbox {
 
     };
 
+      /*
+       * Output 3/6 modes
+       */
+      enum sick_lms_5xx_output_mode_t {
+	  SICK_LMS_5XX_OUTPUT_MODE_NO_FUNCTION = 0,
+	  SICK_LMS_5XX_OUTPUT_MODE_COMMAND = 1,
+	  SICK_LMS_5XX_OUTPUT_MODE_DEVICE_READY = 2,
+	  SICK_LMS_5XX_OUTPUT_MODE_APPLICATION = 3,
+	  SICK_LMS_5XX_OUTPUT_MODE_APPLIC_DEV_READY = 4,
+	  SICK_LMS_5XX_OUTPUT_MODE_DEV_READY_POLL = 5,
+	  SICK_LMS_5XX_OUTPUT_MODE_POLLUTION = 6,
+	  SICK_LMS_5XX_OUTPUT_MODE_ZERO_INDEX = 7,
+	  SICK_LMS_5XX_OUTPUT_MODE_MASTER_SYNC = 7,
+      };
+
+      /*
+       * Input 4 modes
+       */
+      enum sick_lms_5xx_input_mode_t {
+	  SICK_LMS_5XX_INPUT_MODE_NO_FUNCTION = 0,
+	  SICK_LMS_5XX_INPUT_MODE_ENCODER = 1,
+	  SICK_LMS_5XX_INPUT_MODE_SLAVE_SYNC = 2,
+	  SICK_LMS_5XX_INPUT_MODE_DIGITAL_INPUT = 3,
+      };
+
     /** Primary constructor */
     SickLMS5xx( const std::string sick_ip_address = DEFAULT_SICK_LMS_5XX_IP_ADDRESS,
                 const uint16_t sick_tcp_port = DEFAULT_SICK_LMS_5XX_TCP_PORT );
@@ -140,6 +165,15 @@ namespace SickToolbox {
     /** Sets the Sick LMS 5xx scan frequency and scan resolution */
     void SetSickScanFreqAndRes( const sick_lms_5xx_scan_freq_t scan_freq,
                                 const sick_lms_5xx_scan_res_t scan_res ) throw( SickTimeoutException, SickIOException, SickErrorException );
+
+    /** Set the Sick LMS 5xx output6 mode */
+    void SetSickOutput6Mode( sick_lms_5xx_output_mode_t mode) throw( SickTimeoutException, SickIOException, SickErrorException );
+
+    /** Set the Sick LMS 5xx input3 mode */
+    void SetSickInput3Mode( sick_lms_5xx_input_mode_t mode) throw( SickTimeoutException, SickIOException, SickErrorException );
+
+    /** Set the Sick LMS 5xx sync phase */
+   void SetSickSyncPhase( int phase) throw( SickTimeoutException, SickIOException, SickErrorException );
 
     /** Sets the Sick LMS 5xx echo filter mode */
     void SetSickEchoFilter(sick_lms_5xx_echo_filter_t echo_filter) throw( SickTimeoutException, SickIOException, SickErrorException );

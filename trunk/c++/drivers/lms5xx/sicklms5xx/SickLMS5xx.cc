@@ -1256,7 +1256,220 @@ namespace SickToolbox {
 
   }
 
+    /** Set the Sick LMS 5xx output6 mode */
+    void SickLMS5xx::SetSickOutput6Mode( sick_lms_5xx_output_mode_t mode) throw( SickTimeoutException, SickIOException, SickErrorException ) {
+	/* Allocate a single buffer for payload contents */
+	uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
+
+	std::cout << std::endl << "\t*** Attempting to set output6 mode..." << std::endl;
+    
+	/* Set the command type */
+	payload_buffer[0]  = 's';
+	payload_buffer[1]  = 'W';
+	payload_buffer[2]  = 'N';
+    
+	payload_buffer[3]  = ' ';
+
+	/* Set the command */
+	payload_buffer[4]  = 'D';
+	payload_buffer[5]  = 'O';
+	payload_buffer[6]  = '6';
+	payload_buffer[7]  = 'F';
+	payload_buffer[8]  = 'n';
+	payload_buffer[9]  = 'c';
+	payload_buffer[10] = ' ';
+	payload_buffer[11] = mode+0x30;
+    
+	/* Construct command message */
+	SickLMS5xxMessage send_message(payload_buffer,12);
+
+	/* Setup container for recv message */
+	SickLMS5xxMessage recv_message;
+
+	try {
+	    /* Send message and get reply */
+	    _sendMessageAndGetReply(send_message, recv_message, "sWA", "DO6Fnc");
+	}
+
+	/* Handle a timeout! */
+	catch (SickTimeoutException &sick_timeout_exception) {
+	    std::cerr << sick_timeout_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* Handle write buffer exceptions */
+	catch (SickIOException &sick_io_exception) {
+	    std::cerr << sick_io_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* A safety net */
+	catch (...) {
+	    std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
+	    throw;
+	}
+    
+	/* Reset the buffer (not necessary, but its better to do so just in case) */
+	memset(payload_buffer,0,SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH);
   
+	/* Extract the message payload */
+	recv_message.GetPayload(payload_buffer);
+    
+	/* Check if it worked... */
+	if (payload_buffer[10] != 0x0) {
+	    throw SickErrorException("SickLMS5xx::_setSickOutput6Mode: failed ");
+	}
+
+	std::cout << "\t\tOutput6 mode set to " << mode << std::endl << std::endl;
+  }
+	
+    /** Set the Sick LMS 5xx input3 mode */
+    void SickLMS5xx::SetSickInput3Mode( sick_lms_5xx_input_mode_t mode) throw( SickTimeoutException, SickIOException, SickErrorException ) {
+	/* Allocate a single buffer for payload contents */
+	uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
+
+	std::cout << std::endl << "\t*** Attempting to set input3 mode..." << std::endl;
+    
+	/* Set the command type */
+	payload_buffer[0]  = 's';
+	payload_buffer[1]  = 'W';
+	payload_buffer[2]  = 'N';
+    
+	payload_buffer[3]  = ' ';
+
+	/* Set the command */
+	payload_buffer[4]  = 'D';
+	payload_buffer[5]  = 'O';
+	payload_buffer[6]  = '3';
+	payload_buffer[7]  = 'A';
+	payload_buffer[8]  = 'n';
+	payload_buffer[9]  = 'd';
+	payload_buffer[10] = '4';
+	payload_buffer[11] = 'F';
+	payload_buffer[12] = 'n';
+	payload_buffer[13] = 'c';
+	payload_buffer[14] = ' ';
+	payload_buffer[15] = mode+0x30;
+    
+	/* Construct command message */
+	SickLMS5xxMessage send_message(payload_buffer,16);
+
+	/* Setup container for recv message */
+	SickLMS5xxMessage recv_message;
+
+	try {
+	    /* Send message and get reply */
+	    _sendMessageAndGetReply(send_message, recv_message, "sAN", "DO3And4Fnc");
+	}
+
+	/* Handle a timeout! */
+	catch (SickTimeoutException &sick_timeout_exception) {
+	    std::cerr << sick_timeout_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* Handle write buffer exceptions */
+	catch (SickIOException &sick_io_exception) {
+	    std::cerr << sick_io_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* A safety net */
+	catch (...) {
+	    std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
+	    throw;
+	}
+    
+	/* Reset the buffer (not necessary, but its better to do so just in case) */
+	memset(payload_buffer,0,SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH);
+  
+	/* Extract the message payload */
+	recv_message.GetPayload(payload_buffer);
+    
+	/* Check if it worked... */
+	if (payload_buffer[14] != 0x0) {
+	    throw SickErrorException("SickLMS5xx::_setSickInput4Mode: failed ");
+	}
+
+	std::cout << "\t\tInput4 mode set!" << std::endl << std::endl;
+    }
+
+    /** Set the Sick LMS 5xx sync phase */
+    void SickLMS5xx::SetSickSyncPhase( int phase) throw( SickTimeoutException, SickIOException, SickErrorException ) {
+	/* Allocate a single buffer for payload contents */
+	uint8_t payload_buffer[SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH] = {0};
+
+	std::cout << std::endl << "\t*** Attempting to set output6 mode..." << std::endl;
+    
+	/* Set the command type */
+	payload_buffer[0]  = 's';
+	payload_buffer[1]  = 'W';
+	payload_buffer[2]  = 'N';
+    
+	payload_buffer[3]  = ' ';
+
+	/* Set the command */
+	payload_buffer[4]  = 'S';
+	payload_buffer[5]  = 'Y';
+	payload_buffer[6]  = 'P';
+	payload_buffer[7]  = 'h';
+	payload_buffer[8]  = 'a';
+	payload_buffer[9]  = 's';
+	payload_buffer[10] = 'e';
+	payload_buffer[11] = ' ';
+	if (phase<0) {
+	    payload_buffer[12] = '-';
+	    phase=-phase;
+	} else
+	    payload_buffer[12] = '+';
+	payload_buffer[13] = (phase/100)+0x30; phase=phase%100;
+	payload_buffer[14] = (phase/10)+0x30; phase=phase%10;
+	payload_buffer[15] = phase+0x30;
+    
+	/* Construct command message */
+	SickLMS5xxMessage send_message(payload_buffer,16);
+
+	/* Setup container for recv message */
+	SickLMS5xxMessage recv_message;
+
+	try {
+	    /* Send message and get reply */
+	    _sendMessageAndGetReply(send_message, recv_message, "sWN", "SYPhase");
+	}
+
+	/* Handle a timeout! */
+	catch (SickTimeoutException &sick_timeout_exception) {
+	    std::cerr << sick_timeout_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* Handle write buffer exceptions */
+	catch (SickIOException &sick_io_exception) {
+	    std::cerr << sick_io_exception.what() << std::endl;
+	    throw;
+	}
+    
+	/* A safety net */
+	catch (...) {
+	    std::cerr << "SickLMS5xx::_sendMessageAndGetReply: Unknown exception!!!" << std::endl;
+	    throw;
+	}
+    
+	/* Reset the buffer (not necessary, but its better to do so just in case) */
+	memset(payload_buffer,0,SickLMS5xxMessage::MESSAGE_PAYLOAD_MAX_LENGTH);
+  
+	/* Extract the message payload */
+	recv_message.GetPayload(payload_buffer);
+    
+	/* Check if it worked... */
+	if (payload_buffer[11] != '0') {
+	    throw SickErrorException("SickLMS5xx::_setSYPhase: failed ");
+	}
+
+	std::cout << "\t\tInput4 mode set!" << std::endl << std::endl;
+    }
+
+
   /**
    * \brief Login as an authorized client
    */
@@ -1288,7 +1501,7 @@ namespace SickToolbox {
     payload_buffer[16] = 'e';    
 
     payload_buffer[17] = ' ';
-    
+
     /* Set as authorized client */
     payload_buffer[18] = '0';
     payload_buffer[19] = '3';
