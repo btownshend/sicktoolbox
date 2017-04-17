@@ -1359,7 +1359,7 @@ namespace SickToolbox {
 
 	try {
 	    /* Send message and get reply */
-	    _sendMessageAndGetReply(send_message, recv_message, "sAN", "DO3And4Fnc");
+	    _sendMessageAndGetReply(send_message, recv_message, "sWA", "DO3And4Fnc");
 	}
 
 	/* Handle a timeout! */
@@ -1391,7 +1391,7 @@ namespace SickToolbox {
 	    throw SickErrorException("SickLMS5xx::_setSickInput4Mode: failed ");
 	}
 
-	std::cout << "\t\tInput4 mode set!" << std::endl << std::endl;
+	std::cout << "\t\tInput3 mode set to " << mode << std::endl << std::endl;
     }
 
     /** Set the Sick LMS 5xx sync phase */
@@ -1434,7 +1434,7 @@ namespace SickToolbox {
 
 	try {
 	    /* Send message and get reply */
-	    _sendMessageAndGetReply(send_message, recv_message, "sWN", "SYPhase");
+	    _sendMessageAndGetReply(send_message, recv_message, "sWA", "SYPhase");
 	}
 
 	/* Handle a timeout! */
