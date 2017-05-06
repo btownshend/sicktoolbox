@@ -370,7 +370,9 @@ namespace SickToolbox {
                                         unsigned int * const reflect_4_vals,
                                         unsigned int * const reflect_5_vals,
                                         unsigned int & num_measurements,
-                                        unsigned int * const dev_status ) throw ( SickIOException, SickConfigException, SickTimeoutException ) {
+                                        unsigned int * const dev_status,
+					unsigned int status_length   // Number of integers in dev_status (defaults to 1 for just the device status)
+					) throw ( SickIOException, SickConfigException, SickTimeoutException ) {
     
     /* Ensure the device has been initialized */
     if (!_sick_initialized) {
@@ -434,21 +436,24 @@ namespace SickToolbox {
     recv_message.GetPayloadAsCStr((char *)payload_buffer);
 
     unsigned int null_int = 0;
-    char * payload_str = NULL;
+    char * payload_str = (char *)&payload_buffer[16];
 
-    /*
-     * Acquire status
-     */
     if (dev_status != NULL) {
+	if (status_length==1) {
+	    /*
+	     * Acquire status (old mode)
+	     */
+	    for (unsigned int i = 0; i < 3; i++) {
+		payload_str = _convertNextTokenToUInt(payload_str,null_int);
+	    }
 
-      payload_str = (char *)&payload_buffer[16];      
-      for (unsigned int i = 0; i < 3; i++) {
-        payload_str = _convertNextTokenToUInt(payload_str,null_int);
-      }
-
-      /* Grab the contamination value */
-      _convertNextTokenToUInt(payload_str,*dev_status);
-
+	    /* Grab the contamination value */
+	    _convertNextTokenToUInt(payload_str,*dev_status);
+	} else if (status_length>0) {
+	    // Acquire all the data up to status_length and store
+	    for (int i=0;i<status_length;i++)
+		payload_str=_convertNextTokenToUInt(payload_str,dev_status[i]);
+	}
     }
 
     /* Process DIST sections */

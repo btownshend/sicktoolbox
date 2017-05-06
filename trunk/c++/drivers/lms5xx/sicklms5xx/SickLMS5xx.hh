@@ -205,7 +205,8 @@ namespace SickToolbox {
                               unsigned int * const reflect_4_vals,
                               unsigned int * const reflect_5_vals,
                               unsigned int & num_measurements,
-                              unsigned int * const dev_status = NULL ) throw ( SickIOException, SickConfigException, SickTimeoutException );
+                              unsigned int * const dev_status = NULL,
+			      unsigned int status_length = 1) throw ( SickIOException, SickConfigException, SickTimeoutException );
 
     /** Uninitializes the Sick LD unit */
     void Uninitialize( const bool disp_banner = true ) throw( SickIOException, SickTimeoutException, SickErrorException, SickThreadException );
